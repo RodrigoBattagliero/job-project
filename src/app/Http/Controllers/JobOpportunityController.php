@@ -2,18 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\JobOpportunity;
+use App\Http\Resources\JobOpportunityResource;
 use App\Http\Requests\StoreJobOpportunityRequest;
 use App\Http\Requests\UpdateJobOpportunityRequest;
-use App\Http\Resources\JobOpportunityResource;
-use App\Models\JobOpportunity;
+use App\Interfaces\JobOpportunityRepositoryInterface;
 
 class JobOpportunityController extends Controller
 {
-    private JobOpportunityRepositoryInterface $jobOpportunitRepositoryInterface;
+    private JobOpportunityRepositoryInterface $jobOpportunityRepositoryInterface;
 
-    public function __construct(JobOpportunitRepositoryInterface $jobOpportunitRepositoryInterface)
+    public function __construct(JobOpportunityRepositoryInterface $jobOpportunityRepositoryInterface)
     {
-        $this->jobOpportunitRepositoryInterface = $jobOpportunitRepositoryInterface;
+        $this->jobOpportunityRepositoryInterface = $jobOpportunityRepositoryInterface;
     }
 
     /**
@@ -21,8 +22,8 @@ class JobOpportunityController extends Controller
      */
     public function index()
     {
-        $data = $this->jobOpportunitRepositoryInterface->index();
-        return $this->sendResponse(StoreJobOpportunityRequest::collection($data), 'success');
+        $data = $this->jobOpportunityRepositoryInterface->index();
+        return $this->sendResponse(JobOpportunityResource::collection($data), 'success');
     }
 
     /**
@@ -31,11 +32,11 @@ class JobOpportunityController extends Controller
     public function store(StoreJobOpportunityRequest $request)
     {
         try {
-            $product = $this->jobOpportunitRepositoryInterface->store($request->validated());
+            $product = $this->jobOpportunityRepositoryInterface->store($request->validated());
 
             return $this->sendResponse(
                 new JobOpportunityResource($product),
-                'Product created successfully',
+                'Job opportunity created successfully',
                 201
             );
 

@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\JobOpportunity;
+use Illuminate\Support\Facades\Http;
 use App\Http\Resources\JobOpportunityResource;
 use App\Http\Requests\StoreJobOpportunityRequest;
+use App\Http\Requests\SearchJobOpportunityRequest;
 use App\Http\Requests\UpdateJobOpportunityRequest;
+use App\Http\Resources\SearchJobOpportunityResource;
 use App\Interfaces\JobOpportunityRepositoryInterface;
 
 class JobOpportunityController extends Controller
@@ -43,5 +46,12 @@ class JobOpportunityController extends Controller
         } catch (\Exception $e) {
             return $this->rollback($e);
         }
+    }
+
+    public function search(SearchJobOpportunityRequest $request)
+    {
+        
+        $data = $this->jobOpportunityRepositoryInterface->search($request->validated());
+        return $this->sendResponse(SearchJobOpportunityResource::collection($data), 'success');
     }
 }

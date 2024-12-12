@@ -123,4 +123,6 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'api_base_url' => env('API_BASE_URL', 'localhost:8081'),
+
 ];

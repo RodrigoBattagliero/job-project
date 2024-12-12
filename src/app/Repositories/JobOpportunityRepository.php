@@ -41,7 +41,7 @@ class JobOpportunityRepository implements JobOpportunityRepositoryInterface
         if (isset($data['max_salary'])) {
             $filters[] =  ['salary', '<', $data['max_salary']];
         }
-        $mergeData = (object)\array_merge(
+        $mergeData = \array_merge(
             $jibberyData,
             JobOpportunity::where($filters)->get()->toArray()
         );

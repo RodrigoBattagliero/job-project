@@ -25,8 +25,8 @@ class SearchJobOpportunityRequest extends FormRequest
     {
         return [
             'title' => 'string|max:255',
-            'min_salary' => 'string',
-            'max_salary' => 'string',
+            'min_salary' => 'numeric',
+            'max_salary' => 'numeric',
             'country' => 'string',
         ];
     }

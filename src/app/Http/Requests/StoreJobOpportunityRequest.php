@@ -26,7 +26,7 @@ class StoreJobOpportunityRequest extends FormRequest
         return [
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'salary' => 'required|string',
+            'salary' => 'required|numeric',
             'country' => 'required|string',
             'skills' => 'required|array',
         ];

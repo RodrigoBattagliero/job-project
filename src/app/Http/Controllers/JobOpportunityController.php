@@ -2,22 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\JobOpportunity;
-use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Collection;
 use App\Http\Resources\JobOpportunityResource;
 use App\Http\Requests\StoreJobOpportunityRequest;
 use App\Http\Requests\SearchJobOpportunityRequest;
-use App\Http\Requests\UpdateJobOpportunityRequest;
 use App\Http\Resources\SearchJobOpportunityResource;
 use App\Interfaces\JobOpportunityRepositoryInterface;
+use App\Services\Search\JobOpportunityService as SearchJobOpportunityService;
 
 class JobOpportunityController extends Controller
 {
     private JobOpportunityRepositoryInterface $jobOpportunityRepositoryInterface;
+    private SearchJobOpportunityService $searchJobOpportunityService;
 
-    public function __construct(JobOpportunityRepositoryInterface $jobOpportunityRepositoryInterface)
+    public function __construct(
+        JobOpportunityRepositoryInterface $jobOpportunityRepositoryInterface,
+        SearchJobOpportunityService $searchJobOpportunityService
+    )
     {
         $this->jobOpportunityRepositoryInterface = $jobOpportunityRepositoryInterface;
+        $this->searchJobOpportunityService = $searchJobOpportunityService;
     }
 
     /**
@@ -51,7 +55,8 @@ class JobOpportunityController extends Controller
     public function search(SearchJobOpportunityRequest $request)
     {
         
-        $data = $this->jobOpportunityRepositoryInterface->search($request->validated());
-        return $this->sendResponse(SearchJobOpportunityResource::collection($data), 'success');
+        $data = $this->searchJobOpportunityService->search($request->validated());
+        $colecction = new Collection($data);
+        return $this->sendResponse(SearchJobOpportunityResource::collection($colecction), 'success');
     }
 }

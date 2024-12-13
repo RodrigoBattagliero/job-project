@@ -4,7 +4,7 @@ namespace App\Services\Search;
 
 use Illuminate\Support\Facades\Http;
 
-class SourceJobbery implements SourceInterface
+class AvatureSource implements ExternalSourceInterface
 {
     public function getResults(array $queryParams)
     {

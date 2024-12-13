@@ -2,7 +2,7 @@
 
 namespace App\Services\Search;
 
-interface SourceInterface
+interface ExternalSourceInterface
 {
     public function getResults(array $searchData);
 }

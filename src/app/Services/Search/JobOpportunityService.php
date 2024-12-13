@@ -2,24 +2,32 @@
 
 namespace App\Services\Search;
 
+use App\Interfaces\JobOpportunityRepositoryInterface;
+
 class JobOpportunityService
 {
-    private $sources;
-    private $searchData;
+    private JobOpportunityRepositoryInterface $jobOpportunityRepository;
+    private ExternalSourceInterface $externalSource;
 
-    public function __construct(array $sources, array $searchData)
+    public function __construct(
+        JobOpportunityRepositoryInterface $jobOpportunityRepository,
+        AvatureSource $externalSource,
+    )
     {
-        $this->sources = $sources;
-        $this->searchData = $searchData; 
+        $this->jobOpportunityRepository = $jobOpportunityRepository;
+        $this->externalSource = $externalSource; 
     }
 
-    public function search()
+    public function search(array $searchData)
     {
-        $result = [];
-        foreach ($this->sources as $source) {
-            $result[] = $source->getResults($this->searchData);
-        }
+        $jibberyData = $this->externalSource->getResults($searchData);
+        $localData = $this->jobOpportunityRepository->search($searchData);
 
-        return $result;
+        $mergeData = \array_merge(
+            $localData,
+            $jibberyData,
+        );
+        
+        return $mergeData;
     }
 }

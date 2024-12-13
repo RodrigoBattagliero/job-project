@@ -4,8 +4,6 @@ namespace App\Repositories;
 
 use App\Interfaces\JobOpportunityRepositoryInterface;
 use App\Models\JobOpportunity;
-use App\Services\Search\SourceJobbery;
-use Illuminate\Support\Collection;
 
 class JobOpportunityRepository implements JobOpportunityRepositoryInterface
 {
@@ -21,9 +19,6 @@ class JobOpportunityRepository implements JobOpportunityRepositoryInterface
 
     public function search(array $data)
     {
-        $source = new SourceJobbery();
-        $jibberyData = $source->getResults($data);
-
         $filters = [];
 
         if (isset($data['title'])) {
@@ -41,13 +36,7 @@ class JobOpportunityRepository implements JobOpportunityRepositoryInterface
         if (isset($data['max_salary'])) {
             $filters[] =  ['salary', '<', $data['max_salary']];
         }
-        $mergeData = \array_merge(
-            JobOpportunity::where($filters)->get()->toArray(),
-            $jibberyData,
-        );
-        
-        $colecction = new Collection($mergeData);
-        
-        return $colecction;
+
+        return JobOpportunity::where($filters)->get()->toArray();
     }
 }

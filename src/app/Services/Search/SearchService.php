@@ -4,7 +4,7 @@ namespace App\Services\Search;
 
 use App\Interfaces\JobOpportunityRepositoryInterface;
 
-class JobOpportunityService
+class SearchService
 {
     private JobOpportunityRepositoryInterface $jobOpportunityRepository;
     private ExternalSourceInterface $externalSource;

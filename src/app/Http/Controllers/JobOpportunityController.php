@@ -8,20 +8,18 @@ use App\Http\Requests\StoreJobOpportunityRequest;
 use App\Http\Requests\SearchJobOpportunityRequest;
 use App\Http\Resources\SearchJobOpportunityResource;
 use App\Interfaces\JobOpportunityRepositoryInterface;
+use App\Services\JobOpportunityService;
 use App\Services\Search\JobOpportunityService as SearchJobOpportunityService;
 
 class JobOpportunityController extends Controller
 {
-    private JobOpportunityRepositoryInterface $jobOpportunityRepositoryInterface;
-    private SearchJobOpportunityService $searchJobOpportunityService;
+    private JobOpportunityService $jobOpportunityService;
 
     public function __construct(
-        JobOpportunityRepositoryInterface $jobOpportunityRepositoryInterface,
-        SearchJobOpportunityService $searchJobOpportunityService
+        JobOpportunityService $jobOpportunityService,
     )
     {
-        $this->jobOpportunityRepositoryInterface = $jobOpportunityRepositoryInterface;
-        $this->searchJobOpportunityService = $searchJobOpportunityService;
+        $this->jobOpportunityService = $jobOpportunityService;
     }
 
     /**
@@ -29,7 +27,7 @@ class JobOpportunityController extends Controller
      */
     public function index()
     {
-        $data = $this->jobOpportunityRepositoryInterface->index();
+        $data = $this->jobOpportunityService->all();
         return $this->sendResponse(JobOpportunityResource::collection($data), 'success');
     }
 
@@ -39,7 +37,7 @@ class JobOpportunityController extends Controller
     public function store(StoreJobOpportunityRequest $request)
     {
         try {
-            $product = $this->jobOpportunityRepositoryInterface->store($request->validated());
+            $product = $this->jobOpportunityService->store($request->validated());
 
             return $this->sendResponse(
                 new JobOpportunityResource($product),
@@ -55,7 +53,7 @@ class JobOpportunityController extends Controller
     public function search(SearchJobOpportunityRequest $request)
     {
         
-        $data = $this->searchJobOpportunityService->search($request->validated());
+        $data = $this->jobOpportunityService->search($request->validated());
         $colecction = new Collection($data);
         return $this->sendResponse(SearchJobOpportunityResource::collection($colecction), 'success');
     }

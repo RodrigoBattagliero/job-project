@@ -8,7 +8,6 @@ class SourceJobbery implements SourceInterface
 {
     public function getResults(array $searchData)
     {
-        $url = '';
         $params = $this->formatParams($searchData);
         $response = $this->getResponse($params);
         $formatResponse = $this->formatResponse($response);
@@ -40,13 +39,21 @@ class SourceJobbery implements SourceInterface
     public function getResponse(array $params) 
     {        
         try {
-            $url = config('app.api_base_url', env('API_BASE_URL'));
-            $response = Http::get($url.'/jobs',$params);
-
+            $url = $this->getFullUrl();
+            $response = Http::get($url,$params);
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            $response = [];
         }
         return $response;
+    }
+
+    public function getFullUrl()
+    {
+        return 
+            config('app.external_job_sources_url.avatureexternaljobs.base') .
+            ':' . config('app.external_job_sources_url.avatureexternaljobs.port') .
+            '/' . config('app.external_job_sources_url.avatureexternaljobs.service')
+        ;
     }
 
     public function formatResponse($jsonString)

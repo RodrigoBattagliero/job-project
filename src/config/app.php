@@ -26,7 +26,7 @@ return [
     |
     */
 
-    'env' => env('APP_ENV', 'production'),
+    'env' => env('APP_ENV', 'development'),
 
     /*
     |--------------------------------------------------------------------------
@@ -123,6 +123,12 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
-    'api_base_url' => env('API_BASE_URL', 'localhost:8081'),
+    'external_job_sources_url' => [
+        'avatureexternaljobs' => [
+            'base' => env('EXTERNAL_SOURCE_URL_BASE', ''),
+            'port' => env('EXTERNAL_SOURCE_URL_PORT', ''),
+            'service' => env('EXTERNAL_SOURCE_URL_SERVICE', ''),
+        ],
+    ],
 
 ];

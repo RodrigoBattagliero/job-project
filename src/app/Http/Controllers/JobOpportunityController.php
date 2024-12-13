@@ -7,9 +7,7 @@ use App\Http\Resources\JobOpportunityResource;
 use App\Http\Requests\StoreJobOpportunityRequest;
 use App\Http\Requests\SearchJobOpportunityRequest;
 use App\Http\Resources\SearchJobOpportunityResource;
-use App\Interfaces\JobOpportunityRepositoryInterface;
 use App\Services\JobOpportunityService;
-use App\Services\Search\JobOpportunityService as SearchJobOpportunityService;
 
 class JobOpportunityController extends Controller
 {
@@ -46,7 +44,7 @@ class JobOpportunityController extends Controller
             );
 
         } catch (\Exception $e) {
-            return $this->rollback($e);
+            return $this->throw($e);
         }
     }
 

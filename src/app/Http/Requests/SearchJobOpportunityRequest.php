@@ -33,7 +33,7 @@ class SearchJobOpportunityRequest extends FormRequest
 
     public function failedValidation(Validator $validator)
     {
-        $errors = $validator->errors(); // Here is your array of errors
+        $errors = $validator->errors(); 
         throw new HttpResponseException(response()->json(["message"=> $errors], 500));
     }
 }

@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Http;
 
 class AvatureSource implements ExternalSourceInterface
 {
-    public function getResults(array $queryParams)
+    public function getResults(array $queryParams): array
     {
         $params = $this->formatQueryParams($queryParams);
         $response = $this->getResponseFromSourceData($this->getFullUrl(), $params);
@@ -15,7 +15,7 @@ class AvatureSource implements ExternalSourceInterface
         return $formatResponse;
     }
 
-    public function formatQueryParams(array $inputParams) 
+    public function formatQueryParams(array $inputParams): array
     {
         $params = [];
         if (isset($inputParams['title'])) {
@@ -36,17 +36,17 @@ class AvatureSource implements ExternalSourceInterface
         return $params;
     }
 
-    public function getResponseFromSourceData(string $url, array $params) 
+    public function getResponseFromSourceData(string $url, array $params): array
     {        
         try {
-            $response = Http::get($url, $params)->object();
+            $response = (array) Http::get($url, $params)->object();
         } catch (\Exception $e) {
             $response = [];
         }
         return $response;
     }
 
-    public function getFullUrl()
+    public function getFullUrl(): string
     {
         return 
             config('app.external_job_sources_url.avatureexternaljobs.base') .
@@ -55,7 +55,7 @@ class AvatureSource implements ExternalSourceInterface
         ;
     }
 
-    public function sourceDataToArray($arrayData)
+    public function sourceDataToArray(array $arrayData): array
     {
         $response = [];
         
@@ -68,7 +68,7 @@ class AvatureSource implements ExternalSourceInterface
         return $response;
     }
 
-    public function sourceToArray($info, $country)
+    public function sourceToArray(array $info, string $country) : array
     {
         $job = [];
         $job['title'] = $info[0];
@@ -80,13 +80,13 @@ class AvatureSource implements ExternalSourceInterface
         return $job;
     }
 
-    public function fromXml($xmlString) 
+    public function fromXml(string $xmlString): array
     {        
         $simplexml = \simplexml_load_string($xmlString, "SimpleXMLElement", LIBXML_NOCDATA);
         $json = \json_encode($simplexml);
         $array = \json_decode($json, true);
         if ($array) {
-            return $array['skill'];
+            return is_array($array['skill']) ? $array['skill'] : [$array['skill']] ;
         } else {
             return [];
         }

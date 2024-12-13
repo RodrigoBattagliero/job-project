@@ -11,7 +11,7 @@ class SearchService
 
     public function __construct(
         JobOpportunityRepositoryInterface $jobOpportunityRepository,
-        AvatureSource $externalSource,
+        ExternalSourceInterface $externalSource,
     )
     {
         $this->jobOpportunityRepository = $jobOpportunityRepository;

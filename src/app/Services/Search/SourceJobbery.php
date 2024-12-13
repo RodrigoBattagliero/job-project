@@ -6,16 +6,16 @@ use Illuminate\Support\Facades\Http;
 
 class SourceJobbery implements SourceInterface
 {
-    public function getResults(array $searchData)
+    public function getResults(array $queryParams)
     {
-        $params = $this->formatParams($searchData);
-        $response = $this->getResponse($params);
-        $formatResponse = $this->formatResponse($response);
-        
+        $params = $this->formatQueryParams($queryParams);
+        $response = $this->getResponseFromSourceData($this->getFullUrl(), $params);
+        $formatResponse = $this->sourceDataToArray($response);
+
         return $formatResponse;
     }
 
-    public function formatParams(array $inputParams) 
+    public function formatQueryParams(array $inputParams) 
     {
         $params = [];
         if (isset($inputParams['title'])) {
@@ -27,20 +27,19 @@ class SourceJobbery implements SourceInterface
         }
 
         if (isset($inputParams['min_salary'])) {
-            $params['min_salary'] = $inputParams['min_salary'];
+            $params['salary_min'] = $inputParams['min_salary'];
         }
 
         if (isset($inputParams['max_salary'])) {
-            $params['max_salary'] = $inputParams['max_salary'];
+            $params['salary_max'] = $inputParams['max_salary'];
         }    
         return $params;
     }
 
-    public function getResponse(array $params) 
+    public function getResponseFromSourceData(string $url, array $params) 
     {        
         try {
-            $url = $this->getFullUrl();
-            $response = Http::get($url,$params);
+            $response = Http::get($url, $params)->object();
         } catch (\Exception $e) {
             $response = [];
         }
@@ -56,26 +55,30 @@ class SourceJobbery implements SourceInterface
         ;
     }
 
-    public function formatResponse($jsonString)
+    public function sourceDataToArray($arrayData)
     {
         $response = [];
-        $arrayData = \json_decode($jsonString);
-
+        //$arrayData = \json_decode($jsonString);
+        
         foreach ($arrayData as $country => $countryArray) {
             foreach ($countryArray as $info) {
-                $job = [];
-                $job['title'] = $info[0];
-                $job['salary'] = $info[1];
-                $job['skills'] = $this->fromXml($info[2]);
-                $job['country'] = $country;
-                $job['description'] = '';
-
+                $job = $this->sourceToArray($info, $country);
                 $response[] = $job;
             }
         }
-        
-
         return $response;
+    }
+
+    public function sourceToArray($info, $country)
+    {
+        $job = [];
+        $job['title'] = $info[0];
+        $job['salary'] = $info[1];
+        $job['skills'] = $this->fromXml($info[2]);
+        $job['country'] = $country;
+        $job['description'] = '';
+
+        return $job;
     }
 
     public function fromXml($xmlString) 

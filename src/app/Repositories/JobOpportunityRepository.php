@@ -42,9 +42,10 @@ class JobOpportunityRepository implements JobOpportunityRepositoryInterface
             $filters[] =  ['salary', '<', $data['max_salary']];
         }
         $mergeData = \array_merge(
+            JobOpportunity::where($filters)->get()->toArray(),
             $jibberyData,
-            JobOpportunity::where($filters)->get()->toArray()
         );
+        
         $colecction = new Collection($mergeData);
         
         return $colecction;

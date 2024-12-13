@@ -58,7 +58,6 @@ class SourceJobbery implements SourceInterface
     public function sourceDataToArray($arrayData)
     {
         $response = [];
-        //$arrayData = \json_decode($jsonString);
         
         foreach ($arrayData as $country => $countryArray) {
             foreach ($countryArray as $info) {
